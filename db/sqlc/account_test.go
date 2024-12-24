@@ -2,18 +2,27 @@ package db
 
 import (
 	"context"
-	"simple_bank/util"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"github.com/techschool/simplebank/util"
+	"golang.org/x/exp/rand"
 )
 
-func createRandomAccount(t *testing.T) Account {
-	// user := createRandomUser(t)
+func RandomString(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	seededRand := rand.New(rand.NewSource(uint64(time.Now().UnixNano())))
+	randomString := make([]byte, length)
+	for i := range randomString {
+		randomString[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(randomString)
+}
 
+func createRandomAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
-		Owner:    util.RandomOwner(),
+		Owner:    RandomString(10),
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
@@ -75,7 +84,7 @@ func TestDeleteAccount(t *testing.T) {
 
 	account2, err := testStore.GetAccount(context.Background(), account1.ID)
 	require.Error(t, err)
-	// require.EqualError(t, err, ErrRecordNotFound.Error())
+	require.EqualError(t, err, ErrRecordNotFound.Error())
 	require.Empty(t, account2)
 }
 
