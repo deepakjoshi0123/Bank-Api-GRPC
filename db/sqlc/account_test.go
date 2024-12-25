@@ -7,22 +7,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/techschool/simplebank/util"
-	"golang.org/x/exp/rand"
 )
-
-func RandomString(length int) string {
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	seededRand := rand.New(rand.NewSource(uint64(time.Now().UnixNano())))
-	randomString := make([]byte, length)
-	for i := range randomString {
-		randomString[i] = charset[seededRand.Intn(len(charset))]
-	}
-	return string(randomString)
-}
 
 func createRandomAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
-		Owner:    RandomString(10),
+		Owner:    util.RandomString(6),
 		Balance:  util.RandomMoney(),
 		Currency: util.RandomCurrency(),
 	}
